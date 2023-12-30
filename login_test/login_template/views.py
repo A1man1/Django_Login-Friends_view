@@ -1,6 +1,7 @@
 from functools import wraps
 
 from django.contrib.auth.models import User
+from django.db.models import Q
 from rest_framework import generics , status
 #from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny,  IsAuthenticated
@@ -84,7 +85,7 @@ class PendingRequestListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return FriendRequest.objects.filter(sender=user,status='pending')
+        return FriendRequest.objects.filter(receiver=user,status='pending')
 
 
 class FriendsListView(generics.ListAPIView):
@@ -93,7 +94,7 @@ class FriendsListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return FriendRequest.objects.filter(sender=user,status='accepted')
+        return FriendRequest.objects.filter(Q(sender=user) | Q(receiver=user) & Q(status='accepted'))
     
     
 class AcceptRejectFriendRequestView(generics.RetrieveUpdateDestroyAPIView):
@@ -103,6 +104,9 @@ class AcceptRejectFriendRequestView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request):
         instance = FriendRequest.objects.get(pk=request.data.get('request_id'))
+        if self.request.user.id != instance.receiver.pk:
+            return  Response({'detail': f'Invaild Request! Only recever can accpet the request!'}, status=status.HTTP_400_BAD_REQUEST)
+        
         request_status =request.data.get('status')
         
         if instance.status != 'pending':
