@@ -114,7 +114,7 @@ class AcceptRejectFriendRequestView(generics.RetrieveUpdateDestroyAPIView):
         
         instance.status = request_status
         instance.save()
-        notification_message = f"Your friend request to {instance.receiver} has been {request_status}."
+        notification_message = f"Your friend request to {instance.sender} has been {request_status}."
         return Response({'detail': notification_message}, status=status.HTTP_200_OK)
 
 
