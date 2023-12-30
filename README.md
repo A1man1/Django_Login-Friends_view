@@ -18,11 +18,10 @@ Follow these instructions to set up and run the project locally.
 1. Clone the repository:
 
    ```
-   git clone https://github.com/your-username/django-rate-limited-friend-requests.git
-
-    Navigate to the project directory:
+   git clone git@github.com:A1man1/Django_Login-Friends_view.git
 
    ```
+   Navigate to the project directory:
 
 cd django-rate-limited-friend-requests
 
